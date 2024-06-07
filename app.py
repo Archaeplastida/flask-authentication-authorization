@@ -1,7 +1,7 @@
 from flask import Flask, render_template, redirect, session, flash
 from flask_debugtoolbar import DebugToolbarExtension
-from models import connect_db, db, User
-from forms import RegisterForm, LoginForm
+from models import connect_db, db, User, Feedback
+from forms import RegisterForm, LoginForm, FeedbackForm
 #MAKE YOUR FORMS
 
 app = Flask(__name__)
@@ -83,7 +83,9 @@ def user_page(username):
     """The user page for the given user which is authenticated to access the page."""
     if session.get("username") == username and session.get("email"):
         user = User.query.get((session.get("username"), session.get("email")))
-        return render_template("user_page.html", user_information=user)
+        form = FeedbackForm()
+        feedbacks = Feedback().feedbacks("superh")
+        return render_template("user_page.html", user_information=user, form=form)
     else:
         return redirect("") #Make/assign a page if "secret" condition is not met
         

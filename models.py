@@ -60,3 +60,8 @@ class Feedback(db.Model):
     username = db.Column(db.String, db.ForeignKey("users.username"), unique=True)
 
     user = db.relationship("User", backref="feedbacks")
+
+    @classmethod
+    def feedbacks(cls, user): #YOU NEED TO FIGURE OUT THE SQL QUERY WHICH FILTERS OUT ALL FEEDBACK FROM A GIVEN USER
+        feedbacks = cls.query.filter_by(user=user)
+        return feedbacks #RIGHT HERE YOU NEED TO FINISH

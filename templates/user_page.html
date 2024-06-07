@@ -6,9 +6,27 @@
     <li>Name: {{user_information.first_name}} {{user_information.last_name}}</li>
     <li>Email: {{user_information.email}}</li>
 </ul>
+
 <form method="POST" action="/logout">
     <button>LOGOUT</button>
 </form>
 
-<!-- YOU NEED TO ADD THE FEEDBACK THING, SO THE OTHER USERS CAN SEE SUCH THINGS-->
-{%endblock%}
+<hr>
+<h2>Create New Feedback</h2>
+<form method="POST">
+    {{ form.hidden_tag() }}
+    <div style="margin-bottom:5px;">
+        <h3>{{form.title.label}}</h3>
+        {{form.title}}
+    </div>
+    <div style="margin-bottom:5px;">
+        <h3>{{form.content.label}}</h3>
+        {{form.content}}
+    </div>
+    <div style="margin-bottom:5px;">
+        <button type="submit">SUBMIT</button>
+    </div>
+    <hr>
+
+    <!-- YOU NEED TO ADD THE FEEDBACK THING, SO THE OTHER USERS CAN SEE SUCH THINGS-->
+    {%endblock%}
