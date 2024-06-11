@@ -11,22 +11,25 @@
     <button>LOGOUT</button>
 </form>
 
-<hr>
-<h2>Create New Feedback</h2>
-<form method="POST">
-    {{ form.hidden_tag() }}
-    <div style="margin-bottom:5px;">
-        <h3>{{form.title.label}}</h3>
-        {{form.title}}
-    </div>
-    <div style="margin-bottom:5px;">
-        <h3>{{form.content.label}}</h3>
-        {{form.content}}
-    </div>
-    <div style="margin-bottom:5px;">
-        <button type="submit">SUBMIT</button>
-    </div>
-    <hr>
+<form method="POST" action="/users/{{user_information.username}}/delete">
+    <button style="color:red;font-weight:bold">DELETE USER</button>
+</form>
 
-    <!-- YOU NEED TO ADD THE FEEDBACK THING, SO THE OTHER USERS CAN SEE SUCH THINGS-->
-    {%endblock%}
+<hr>
+{%if feedbacks%}
+<h2>Your feedbacks</h2>
+{%else%}
+<h2>No feedbacks</h2>
+{%endif%}
+<form method="GET" action="/users/{{user_information.username}}/feedback/add" style="margin-bottom:15px">
+    <button>CREATE FEEDBACK</button>
+</form>
+{%for title, content in feedbacks%}
+<fieldset style="width:25vw; margin-bottom:15px;">
+    <h3 style="color:white; background-color:black; margin-top:0; text-align:center;">{{title}}</h3>
+    <p style="text-align:center; white-space:break-spaces;">{{content}}</p>
+</fieldset>
+{%endfor%}
+
+<!-- YOU NEED TO ADD THE FEEDBACK THING, SO THE OTHER USERS CAN SEE SUCH THINGS-->
+{%endblock%}

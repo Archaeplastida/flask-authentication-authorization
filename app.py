@@ -83,11 +83,9 @@ def user_page(username):
     """The user page for the given user which is authenticated to access the page."""
     if session.get("username") == username and session.get("email"):
         user = User.query.get((session.get("username"), session.get("email")))
-        form = FeedbackForm()
-        feedbacks = Feedback().feedbacks("superh")
-        return render_template("user_page.html", user_information=user, form=form)
-    else:
-        return redirect("") #Make/assign a page if "secret" condition is not met
+        feedbacks = User.feedbacks_by(db.session, session.get("username"))
+        return render_template("user_page.html", user_information=user, feedbacks=feedbacks)
+    return redirect("") #Make/assign a page if "secret" condition is not met
         
 @app.route("/logout", methods=['POST'])
 def logout():
@@ -95,3 +93,32 @@ def logout():
     if session.get("username") and session.get("email"):
         session.clear()
         return redirect("")
+    
+@app.route("/users/<username>/feedback/add")
+def feedback_creation(username):
+    if session.get("username") == username and session.get("email"):
+        form = FeedbackForm()
+        return render_template("feedback.html", form=form)
+    return redirect("")
+
+@app.route("/users/<username>/feedback/add", methods=['POST'])
+def feedback_submission(username):
+    if session.get("username") == username and session.get("email"):
+        form = FeedbackForm()
+        if form.validate_on_submit():
+            title = form.title.data
+            content = form.content.data
+            new_feedback = Feedback(title=title, content=content, username=username)
+            db.session.add(new_feedback)
+            db.session.commit()
+            return redirect(f"/users/{username}")
+
+@app.route("/users/<username>/delete", methods=["POST"])
+def user_deletion(username):
+    if session.get("username") == username and session.get("email"):
+        db.session.delete(db.session.query(User).filter_by(username=username).first())
+        db.session.commit()
+        session.clear()
+        return redirect("")
+    
+#YOU NEED TO WORK ON MAKING A WAY TO EDIT OR DELETE FEEDBACKS.

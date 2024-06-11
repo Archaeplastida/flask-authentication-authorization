@@ -12,6 +12,7 @@ def connect_db(app):
     db.init_app(app)
 
 class User(db.Model):
+    """User table of the database."""
     __tablename__ = "users"
 
     username = db.Column(db.String(20),
@@ -28,6 +29,8 @@ class User(db.Model):
     last_name = db.Column(db.String(30),
                            nullable=False)
     
+    feedbacks = db.relationship("Feedback", backref="user", cascade="all, delete")
+    
     #registration of user
     @classmethod
     def register(cls, username, email, first_name, last_name, pwd):
@@ -41,13 +44,21 @@ class User(db.Model):
     @classmethod
     def authenticate(cls, username, pwd):
         """Make sure that this user exists and password is correct"""
-        user = User.query.filter_by(username=username).first()
+        user = cls.query.filter_by(username=username).first()
         if user and bcrypt.check_password_hash(user.password, pwd):
             return user
         else:
             return False
+    #Find all feedbacks of a given user.
+    @classmethod
+    def feedbacks_by(cls, session, user):
+        feedbacks = session.query(Feedback).join(cls).filter(cls.username == user).all()
+        feedbacks = list(feedbacks)
+        feedbacks = [(x.title, x.content) for x in feedbacks]
+        return feedbacks
         
 class Feedback(db.Model):
+    """Feedback table of the database, storing the feedbacks of each user."""
     __tablename__ = "feedback"
     
     id = db.Column(db.Integer,
@@ -57,11 +68,4 @@ class Feedback(db.Model):
                       nullable=False)
     content = db.Column(db.String,
                         nullable=False)
-    username = db.Column(db.String, db.ForeignKey("users.username"), unique=True)
-
-    user = db.relationship("User", backref="feedbacks")
-
-    @classmethod
-    def feedbacks(cls, user): #YOU NEED TO FIGURE OUT THE SQL QUERY WHICH FILTERS OUT ALL FEEDBACK FROM A GIVEN USER
-        feedbacks = cls.query.filter_by(user=user)
-        return feedbacks #RIGHT HERE YOU NEED TO FINISH
+    username = db.Column(db.String, db.ForeignKey("users.username"))
