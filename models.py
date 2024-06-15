@@ -54,7 +54,7 @@ class User(db.Model):
     def feedbacks_by(cls, session, user):
         feedbacks = session.query(Feedback).join(cls).filter(cls.username == user).all()
         feedbacks = list(feedbacks)
-        feedbacks = [(x.title, x.content) for x in feedbacks]
+        feedbacks = [(x.title, x.content, x.id) for x in feedbacks]
         return feedbacks
         
 class Feedback(db.Model):

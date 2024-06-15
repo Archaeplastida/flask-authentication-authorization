@@ -24,8 +24,15 @@
 <form method="GET" action="/users/{{user_information.username}}/feedback/add" style="margin-bottom:15px">
     <button>CREATE FEEDBACK</button>
 </form>
-{%for title, content in feedbacks%}
+{%for title, content, id in feedbacks%}
 <fieldset style="width:25vw; margin-bottom:15px;">
+    <form method="POST" action="/feedback/{{id}}/delete" style="display:inline;">
+        <button>DELETE</button>
+    </form>
+    <form method="GET" action="/feedback/{{id}}/update" style="display:inline;">
+        <button>UPDATE</button>
+    </form>
+    &#60;<b>{{id}}</b>&#62;
     <h3 style="color:white; background-color:black; margin-top:0; text-align:center;">{{title}}</h3>
     <p style="text-align:center; white-space:break-spaces;">{{content}}</p>
 </fieldset>
